@@ -9,7 +9,6 @@ import {
   Show,
   UserButton,
   useUser,
-  useClerk,
 } from "@clerk/nextjs";
 import { Button } from "@/components/ui/button"; // Import shadcn button
 
@@ -42,7 +41,7 @@ const Navbar = () => {
       {/* Auth & Navigation */}
       <div className="flex items-center gap-10">
         <Show when="signed-in">
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-6">
             {navLinks.map((link) => {
               const isActive = pathname === link.href;
               return (
@@ -62,15 +61,17 @@ const Navbar = () => {
                 </Link>
               );
             })}
-            <UserButton />
-            {user?.firstName && (
-              <Link
-                href="/subscriptions"
-                className="font-serif text-base italic text-stone-500 transition-colors hover:text-[#634832] underline-offset-4 hover:underline"
-              >
-                {user.firstName}’s Library
-              </Link>
-            )}
+            <div className="flex items-center gap-3 pl-4 border-l border-stone-200">
+              <UserButton />
+              {user?.firstName && (
+                <Link
+                  href="/subscriptions"
+                  className="hidden md:block font-serif text-sm italic text-stone-500 hover:text-[#634832] transition-colors"
+                >
+                  {user.firstName}’s Library
+                </Link>
+              )}
+            </div>
           </div>
         </Show>
 

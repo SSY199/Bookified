@@ -27,13 +27,13 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <ClerkProvider>
-      <html lang="en">
-        <body className={`${ibmPlexSerif.variable} ${monaSans.variable} relative font-sans antialiased`}>
+    <html lang="en">
+      <body className={`${ibmPlexSerif.variable} ${monaSans.variable} relative font-sans antialiased`}>
+        <ClerkProvider>
           <Navbar />
           {children}
-        </body>
-      </html>
-    </ClerkProvider>
+        </ClerkProvider>
+      </body>
+    </html>
   );
 }
