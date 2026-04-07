@@ -15,7 +15,7 @@ const BookCard = ({ title, author, coverURL, slug }: BookCardProps) => {
       <article className="flex flex-col">
         {/* The White Card Container */}
         <div className="bg-white rounded-2xl p-6 shadow-sm border border-stone-100 transition-all duration-300 group-hover:shadow-md group-hover:-translate-y-1 mb-4">
-          <div className="relative aspect-[2/3] w-full overflow-hidden rounded-md shadow-inner">
+          <div className="relative aspect-2/3 w-full overflow-hidden rounded-md shadow-inner">
             <Image 
               src={coverURL} 
               alt={title} 
