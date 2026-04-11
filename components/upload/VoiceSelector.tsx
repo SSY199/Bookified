@@ -70,8 +70,17 @@ export function VoiceSelector({ currentVoiceId, onSelect, error }: VoiceSelector
 function VoiceCard({ voice, isSelected, onClick }: { voice: Voice; isSelected: boolean; onClick: () => void }) {
   return (
     <div
+      role="radio"
+      aria-checked={isSelected}
+      tabIndex={0}
       onClick={onClick}
-      className={`relative p-4 rounded-xl border cursor-pointer transition-all duration-200 shadow-sm ${
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          onClick();
+        }
+      }}
+      className={`relative p-4 rounded-xl border cursor-pointer transition-all duration-200 shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#663820] ${
         isSelected
           ? "bg-[#FDF6F0] border-[#D7BCA3] ring-1 ring-[#D7BCA3]"
           : "bg-white border-stone-200 hover:border-stone-300 hover:bg-stone-50"

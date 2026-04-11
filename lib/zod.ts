@@ -7,7 +7,7 @@ export const bookUploadSchema = z.object({
   pdf: z
     .any()
     .refine((file) => file instanceof File, "A PDF file is required.")
-    .refine((file) => !file || file.size <= MAX_FILE_SIZE, "Max file size is 50MB."),
+    .refine((file) => file.size <= MAX_FILE_SIZE, "Max file size is 50MB."),
   coverImage: z.any().optional(),
   title: z.string().min(1, "Title is required"),
   author: z.string().min(1, "Author name is required"),

@@ -1,7 +1,5 @@
 "use client";
 
-"use client";
-
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -11,7 +9,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 
-// Import your new extracted schema and type
 import { bookUploadSchema, type BookUploadValues } from "@/lib/zod";
 
 import { LoadingOverlay } from "./LoadingOverlay";
@@ -21,7 +18,6 @@ import { VoiceSelector } from "./VoiceSelector";
 export default function UploadForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Use the imported type and schema here
   const form = useForm<BookUploadValues>({
     resolver: zodResolver(bookUploadSchema),
     defaultValues: { title: "", author: "", voiceId: "rachel" },
@@ -30,11 +26,15 @@ export default function UploadForm() {
   const { pdf, coverImage, voiceId } = form.watch();
   const errors = form.formState.errors;
 
+  // ✅ Correct onSubmit
   const onSubmit = async (data: BookUploadValues) => {
     setIsSubmitting(true);
-    await new Promise((resolve) => setTimeout(resolve, 3000)); // Simulate API
-    console.log("Form Data Submitted:", data);
-    setIsSubmitting(false);
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 3000)); // simulate API
+      console.log("Form Data Submitted:", data);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -44,6 +44,7 @@ export default function UploadForm() {
       <form onSubmit={form.handleSubmit(onSubmit)}>
         <FieldGroup className="space-y-8">
           
+          {/* PDF Upload */}
           <FileUploadDropzone
             label="Book PDF File"
             accept=".pdf"
@@ -51,10 +52,13 @@ export default function UploadForm() {
             title="Click to upload PDF"
             description="PDF file (max 50MB)"
             file={pdf}
-            onChange={(file) => form.setValue("pdf", file, { shouldValidate: true })}
+            onChange={(file) =>
+              form.setValue("pdf", file, { shouldValidate: true })
+            }
             error={errors.pdf?.message as string}
           />
 
+          {/* Cover Image Upload */}
           <FileUploadDropzone
             label="Cover Image"
             isOptional={true}
@@ -63,37 +67,67 @@ export default function UploadForm() {
             title="Click to upload cover image"
             description="Leave empty to auto-generate from PDF"
             file={coverImage}
-            onChange={(file) => form.setValue("coverImage", file, { shouldValidate: true })}
+            onChange={(file) =>
+              form.setValue("coverImage", file, { shouldValidate: true })
+            }
           />
 
+          {/* Title */}
           <Field>
-            <FieldLabel htmlFor="title" className="font-bold text-zinc-900 text-base">Title</FieldLabel>
+            <FieldLabel
+              htmlFor="title"
+              className="font-bold text-zinc-900 text-base"
+            >
+              Title
+            </FieldLabel>
+
             <Input
               id="title"
               {...form.register("title")}
               className="mt-2 bg-white border-stone-200 py-6 text-base focus-visible:ring-[#663820]"
               placeholder="ex: Rich Dad Poor Dad"
             />
-            {errors.title && <p className="text-sm text-red-500 font-medium mt-1">{errors.title.message}</p>}
+
+            {errors.title && (
+              <p className="text-sm text-red-500 font-medium mt-1">
+                {errors.title.message}
+              </p>
+            )}
           </Field>
 
+          {/* Author */}
           <Field>
-            <FieldLabel htmlFor="author" className="font-bold text-zinc-900 text-base">Author Name</FieldLabel>
+            <FieldLabel
+              htmlFor="author"
+              className="font-bold text-zinc-900 text-base"
+            >
+              Author Name
+            </FieldLabel>
+
             <Input
               id="author"
               {...form.register("author")}
               className="mt-2 bg-white border-stone-200 py-6 text-base focus-visible:ring-[#663820]"
               placeholder="ex: Robert Kiyosaki"
             />
-            {errors.author && <p className="text-sm text-red-500 font-medium mt-1">{errors.author.message}</p>}
+
+            {errors.author && (
+              <p className="text-sm text-red-500 font-medium mt-1">
+                {errors.author.message}
+              </p>
+            )}
           </Field>
 
+          {/* Voice Selector */}
           <VoiceSelector
             currentVoiceId={voiceId}
-            onSelect={(id) => form.setValue("voiceId", id, { shouldValidate: true })}
+            onSelect={(id) =>
+              form.setValue("voiceId", id, { shouldValidate: true })
+            }
             error={errors.voiceId?.message}
           />
 
+          {/* Submit Button */}
           <Field>
             <Button
               type="submit"
@@ -103,7 +137,6 @@ export default function UploadForm() {
               Begin Synthesis
             </Button>
           </Field>
-
         </FieldGroup>
       </form>
     </div>
