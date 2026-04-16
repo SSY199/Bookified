@@ -31,6 +31,7 @@ const Navbar = () => {
             alt="Bookified"
             width={42}
             height={26}
+            style={{ width: "auto", height: "auto" }} // <-- Add this line
           />
         </Link>
         <span className="text-xl font-semibold text-zinc-800 tracking-tight">

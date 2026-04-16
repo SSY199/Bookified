@@ -25,6 +25,22 @@ export interface TextSegment {
     wordCount: number;
 }
 
+export const getAllBooks = async () => {
+    try {
+        await connectToDatabase();
+        const books = await Book.find().sort({ createdAt: -1 }).lean();
+        return {
+            success: true,
+            data: JSON.parse(JSON.stringify(books)),
+        };
+    } catch (error) {
+        console.error('Error fetching books:', error);
+        return {
+            success: false,
+            error: 'Failed to fetch books. Please try again later.',
+        }
+    }
+}
 
 export const checkBookExists = async (title: string) => {
 

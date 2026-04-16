@@ -1,7 +1,7 @@
 // app/layout.tsx
 import type { Metadata } from "next";
 import { IBM_Plex_Serif, Mona_Sans } from "next/font/google";
-import { ClerkProvider } from "@clerk/nextjs"; // Import Provider
+import { ClerkProvider } from "@clerk/nextjs";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import { Toaster } from "sonner";
@@ -9,14 +9,14 @@ import { Toaster } from "sonner";
 const ibmPlexSerif = IBM_Plex_Serif({
   variable: "--font-ibm-plex-serif",
   subsets: ["latin"],
-  weight: ['400', '500', '600', '700'],
-  display: "swap"
+  weight: ["400", "500", "600", "700"],
+  display: "swap",
 });
 
 const monaSans = Mona_Sans({
   variable: "--font-mona-sans",
   subsets: ["latin"],
-  display: "swap"
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -29,13 +29,15 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
-      <body className={`${ibmPlexSerif.variable} ${monaSans.variable} relative font-sans antialiased`}>
+      <body
+        suppressHydrationWarning={true}
+        className={`${ibmPlexSerif.variable} ${monaSans.variable} relative font-sans antialiased`}
+      >
         <ClerkProvider>
           <Navbar />
           {children}
           <Toaster />
         </ClerkProvider>
-
       </body>
     </html>
   );
