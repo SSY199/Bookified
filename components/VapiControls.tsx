@@ -37,6 +37,8 @@ const VapiControls = ({ book }: { book: IBook }) => {
 
           {/* Overlapping Mic Button - Toggles Vapi Status */}
           <button
+            type="button"
+            aria-label={isActive ? "Stop voice session" : "Start voice session"}
             onClick={isActive ? stop : start}
             disabled={status === "connecting" || status === "starting"}
             className={`absolute -bottom-4 -right-4 w-15 h-15 rounded-full flex items-center justify-center shadow-lg border border-stone-100 hover:scale-105 transition-all z-10 ${
