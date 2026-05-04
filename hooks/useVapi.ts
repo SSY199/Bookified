@@ -267,6 +267,12 @@ export function useVapi(book: IBook) {
                 },
             });
         } catch (err) {
+            if (sessionIdRef.current) {
+                endVoiceSession(sessionIdRef.current, durationRef.current).catch((endErr) =>
+                    console.error("Failed to end voice session after start failure:", endErr),
+                );
+                sessionIdRef.current = null;
+            }
             console.error('Failed to start call:', err);
             setStatus('idle');
             setLimitError('Failed to start voice session. Please try again.');
