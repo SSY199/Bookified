@@ -36,9 +36,10 @@ export default async function BookDetailsPage({
       {/* Floating Back Button */}
       <Link
         href="/"
+        aria-label="Back to home"
         className="back-btn-floating fixed top-24 left-6 md:left-10 w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-md border border-stone-200 hover:bg-stone-50 transition-colors z-50 text-zinc-700"
       >
-        <ArrowLeft className="w-5 h-5" />
+        <ArrowLeft aria-hidden="true" className="w-5 h-5" />
       </Link>
 
       <div className="book-page-container max-w-4xl mx-auto space-y-6 pt-12 md:pt-0">
