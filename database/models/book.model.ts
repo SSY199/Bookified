@@ -1,6 +1,7 @@
 import { model, models, Schema } from "mongoose";
 
 export interface IBook {
+  _id: string;
   clerkId: string;
   title: string;
   slug: string;

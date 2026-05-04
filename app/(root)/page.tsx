@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react'
 import HeroSection from "@/components/section/HeroSection";
 import BookCard from '@/components/BookCard';
