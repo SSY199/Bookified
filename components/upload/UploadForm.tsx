@@ -65,13 +65,11 @@ export default function UploadForm() {
 
       const fileTitle = data.title.replace(/\s+/g, "_").toLowerCase();
       
-      // FIX: Check for the file properly and handle both Array and single File formats
       if (!data.pdf) {
         toast.error("Please upload a PDF file.");
         return;
       }
       
-      // Safely extract the file
       const pdfFile = Array.isArray(data.pdf) ? data.pdf[0] : (data.pdf as File);
 
       const parsedFile = await parsePDFFile(pdfFile);
@@ -88,7 +86,6 @@ export default function UploadForm() {
 
       let coverUrl: string;
       
-      // FIX: Apply the same safe extraction logic to the cover image
       if (data.coverImage) {
         const coverFile = Array.isArray(data.coverImage) ? data.coverImage[0] : (data.coverImage as File);
         const uploadedCoverBlob = await upload(
@@ -124,7 +121,8 @@ export default function UploadForm() {
       });
       
       if (!book.success) {
-        toast.error("Failed to create book record. Please try again.");
+        // FIX: Display the actual subscription limit error from the server
+        toast.error(book.error || "Failed to create book record. Please try again.");
         return;
       }
       
@@ -137,15 +135,23 @@ export default function UploadForm() {
         return;
       }
 
-      const segments = await saveBookSegments(
-        book.data._id,
-        userId,
-        parsedFile.content,
-      );
-      
-      if (!segments.success) {
-        toast.error("Failed to save book segments. Please try again.");
-        throw new Error("Failed to save book segments");
+      // FIX: Chunk the text segments to bypass the Next.js 1MB limit
+      const allSegments = parsedFile.content;
+      const BATCH_SIZE = 100; // Send 100 segments at a time
+
+      for (let i = 0; i < allSegments.length; i += BATCH_SIZE) {
+        const batch = allSegments.slice(i, i + BATCH_SIZE);
+        
+        const segmentsResult = await saveBookSegments(
+          book.data._id,
+          userId,
+          batch
+        );
+        
+        if (!segmentsResult.success) {
+          toast.error("Failed to save book segments. Please try again.");
+          throw new Error("Failed to save book segments");
+        }
       }
 
       form.reset();
@@ -153,7 +159,13 @@ export default function UploadForm() {
       router.push("/");
     } catch (error) {
       console.error("Error uploading book:", error);
-      toast.error("Failed to upload book. Please try again.");
+        toast.error(error instanceof Error ? error.message : "Failed to upload book. Please try again.");
+      // Catch 1MB error gracefully just in case
+      // if (error.message?.includes('1 MB')) {
+      //    toast.error("File is too large to process. Please try a smaller book.");
+      // } else {
+      //    toast.error("Failed to upload book. Please try again.");
+      // }
     } finally {
       setIsSubmitting(false);
     }

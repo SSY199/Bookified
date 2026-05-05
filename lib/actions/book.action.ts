@@ -4,6 +4,9 @@ import { connectToDatabase } from "@/database/mongoose";
 import { generateSlug } from "../utils";
 import Book from "@/database/models/book.model";
 import BookSegment from "@/database/models/book-segment.model";
+import { revalidatePath } from "next/cache";
+import { getPlanLimits } from "@/lib/subscriptions.server";
+
 
 export interface CreateBook {
   clerkId: string;
@@ -111,12 +114,27 @@ export const createBook = async (data: CreateBook) => {
 
     // check subscription limits before creating a new book
     // (implementation for subscription limit checking would go here)
+    const limits = await getPlanLimits();
+
+    // 2. Count Existing Books
+    const currentBookCount = await Book.countDocuments({
+      clerkId: data.clerkId,
+    });
+
+    // 3. Enforce Limit
+    if (currentBookCount >= limits.maxBooks) {
+      return { 
+        success: false, 
+        error: `You have reached your limit of ${limits.maxBooks} book(s) on your current plan. Please upgrade to add more.` 
+      };
+    }
     const book = await Book.create({
       ...data,
       slug,
       totalSegments: 0,
     });
     if (book) {
+      revalidatePath("/");
       return {
         success: true,
         data: JSON.parse(JSON.stringify(book)),
@@ -173,6 +191,39 @@ export const saveBookSegments = async (
     return {
       success: false,
       error: "Failed to save book segments. Please try again later.",
+    };
+  }
+};
+
+
+// Append this to the bottom of lib/actions/book.action.ts
+
+export const searchBookSegments = async (bookId: string, query: string, limit: number = 5) => {
+  try {
+    await connectToDatabase();
+
+    // Standard MongoDB text search. 
+    // Ensure you have a text index created on the 'content' field in your BookSegment schema.
+    const segments = await BookSegment.find(
+      { 
+        bookId, 
+        $text: { $search: query } 
+      },
+      { score: { $meta: "textScore" } } // Project the match score
+    )
+    .sort({ score: { $meta: "textScore" } }) // Sort by highest relevance
+    .limit(limit) // Limit to top 5 as requested
+    .lean();
+
+    return {
+      success: true,
+      data: segments,
+    };
+  } catch (error) {
+    console.error("Error searching book segments:", error);
+    return {
+      success: false,
+      error: "Failed to search segments. Please try again later.",
     };
   }
 };

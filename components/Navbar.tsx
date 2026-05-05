@@ -19,6 +19,7 @@ const Navbar = () => {
   const navLinks = [
     { name: "Library", href: "/" },
     { name: "Add New", href: "/books/new" },
+    { name: "Pricing", href: "/subscriptions" },
   ];
 
   return (
