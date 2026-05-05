@@ -25,15 +25,13 @@ export async function POST(request: Request): Promise<NextResponse> {
           addRandomSuffix: true,
           maximumSizeInBytes: 50 * 1024 * 1024, // 50MB
           tokenPayload: JSON.stringify({ userId }),
+          callbackUrl: "/api/upload",
         };
       },
-      onUploadCompleted: async ({ blob, tokenPayload }) => {
+      onUploadCompleted: async ({ blob }) => {
         console.log("Upload completed for blob:", blob);
 
-        const payload = tokenPayload ? JSON.parse(tokenPayload) : null;
-        const userId = payload?.userId;
-
-        //TODO: Posting
+        // TODO: Posting — tokenPayload contains JSON.stringify({ userId }) from onBeforeGenerateToken
       },
 
     });

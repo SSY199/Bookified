@@ -128,3 +128,29 @@
     @apply font-sans;
   }
 }
+/* Clerk PricingTable + Bookified theme (dynamic plans from Clerk Billing) */
+.vapi-pricing-wrapper {
+  --clerk-primary: #634832;
+  --clerk-primary-hover: #4d3626;
+  --clerk-background: #ffffff;
+  --clerk-color-background: #ffffff;
+  --clerk-border: #e8d7b8;
+  --clerk-color-input: #faf7f0;
+  --clerk-text: #18181b;
+  --clerk-color-text: #18181b;
+  --clerk-text-muted: #78716c;
+  --clerk-color-text-secondary: #78716c;
+  --clerk-border-radius: 1rem;
+  --clerk-card-radius: 1rem;
+  isolation: isolate;
+  width: 100%;
+}
+
+.subscriptions-pricing-surface .cl-pricingTable {
+  width: 100%;
+  border-radius: var(--clerk-border-radius);
+}
+
+.cl-pricingTable {
+  box-shadow: none;
+}
